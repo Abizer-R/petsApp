@@ -14,6 +14,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -23,10 +24,14 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import com.example.petsapp.data.PetContract.PetEntry;
 
+import java.util.List;
+
 public class MainActivity extends AppCompatActivity {
     private final String TAG = MainActivity.class.getSimpleName();
 
     private PetDbHelper mDbHelper;
+    private ListView petListView;
+    private PetCursorAdapter petCursorAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,41 +95,11 @@ public class MainActivity extends AppCompatActivity {
         );
 
 
-        TextView displayView = findViewById(R.id.text_view_pet);
+        petListView = findViewById(R.id.list_view_pet);
 
-        try {
-            displayView.setText("Number of rows in pets database table: " + cursor.getCount() + " pets.\n\n");
-            displayView.append(PetEntry._ID + " - " +
-                    PetEntry.COLUMN_PET_NAME + " - " +
-                    PetEntry.COLUMN_PET_BREED + " - " +
-                    PetEntry.COLUMN_PET_GENDER + " - " +
-                    PetEntry.COLUMN_PET_WEIGHT + "\n");
+        petCursorAdapter = new PetCursorAdapter(this, cursor);
 
-            int idColumnIndex = cursor.getColumnIndex(PetEntry._ID);
-            int nameColumnIndex = cursor.getColumnIndex(PetEntry.COLUMN_PET_NAME);
-            int breedColumnIndex = cursor.getColumnIndex(PetEntry.COLUMN_PET_BREED);
-            int genderColumnIndex = cursor.getColumnIndex(PetEntry.COLUMN_PET_GENDER);
-            int weightColumnIndex = cursor.getColumnIndex(PetEntry.COLUMN_PET_WEIGHT);
-
-            while(cursor.moveToNext()) {
-
-                int currPetId = cursor.getInt(idColumnIndex);
-                String currPetName = cursor.getString(nameColumnIndex);
-                String currPetBreed = cursor.getString(breedColumnIndex);
-                int currPetGender = cursor.getInt(genderColumnIndex);
-                int currPetWeight = cursor.getInt(weightColumnIndex);
-
-                displayView.append("\n" + currPetId + " - " +
-                        currPetName + " - " +
-                        currPetBreed + " - " +
-                        currPetGender + " - " +
-                        currPetWeight);
-            }
-        } finally {
-            cursor.close();
-        }
-
-
+        petListView.setAdapter(petCursorAdapter);
     }
 
     @Override

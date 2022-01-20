@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp"
+    tools:context=".EditPetActivity">
+
+<!--    Overview Category-->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" >
+
+<!--        Label-->
+        <TextView
+            style="@style/CategoryStyle"
+            android:text="@string/category_overview" />
+
+<!--        Input Fields-->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:paddingStart="4dp"
+            android:orientation="vertical">
+
+<!--            Name Fields-->
+            <EditText
+                style="@style/EditPageFieldStyle"
+                android:id="@+id/edit_pet_name"
+                android:inputType="textCapWords"
+                android:hint="@string/hint_pet_name" />
+
+<!--            Breed Fields-->
+            <EditText
+                style="@style/EditPageFieldStyle"
+                android:id="@+id/edit_pet_breed"
+                android:inputType="textCapWords"
+                android:hint="@string/hint_pet_breed" />
+
+        </LinearLayout>
+    </LinearLayout>
+
+<!--    Gender Category-->
+    <LinearLayout
+        android:id="@+id/container_gender"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+<!--        Label-->
+        <TextView
+            style="@style/CategoryStyle"
+            android:text="@string/category_gender" />
+
+<!--        Input Field-->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:orientation="vertical" >
+
+<!--            Gender Drop-Down Spinner-->
+            <Spinner
+                android:id="@+id/spinner_gender"
+                android:layout_width="wrap_content"
+                android:layout_height="48dp"
+                android:paddingEnd="16dp"
+                android:spinnerMode="dropdown" />
+
+        </LinearLayout>
+    </LinearLayout>
+
+<!--    Measurement Category-->
+    <LinearLayout
+        android:id="@+id/container_measurement"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" >
+
+<!--        Label-->
+        <TextView
+            style="@style/CategoryStyle"
+            android:text="@string/category_measurement" />
+
+<!--        Input Fields-->
+        <RelativeLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:paddingStart="4dp" >
+
+<!--            Weight Field-->
+            <EditText
+                android:id="@+id/edit_pet_weight"
+                style="@style/EditPageFieldStyle"
+                android:hint="@string/hint_pet_weight"
+                android:inputType="number" />
+
+<!--            Units for Weight (kg)-->
+                <TextView
+                    android:id="@+id/label_weight_units"
+                    style="@style/EditPageUnitsStyle"
+                    android:text="@string/unit_pet_weight" />
+        </RelativeLayout>
+    </LinearLayout>
+</LinearLayout>

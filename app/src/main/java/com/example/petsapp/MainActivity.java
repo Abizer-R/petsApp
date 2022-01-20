@@ -96,6 +96,8 @@ public class MainActivity extends AppCompatActivity {
 
 
         petListView = findViewById(R.id.list_view_pet);
+        View emptyView = findViewById(R.id.empty_view);
+        petListView.setEmptyView(emptyView);
 
         petCursorAdapter = new PetCursorAdapter(this, cursor);
 

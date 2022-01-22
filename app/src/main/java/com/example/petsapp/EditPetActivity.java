@@ -10,11 +10,9 @@ import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -26,9 +24,6 @@ import android.widget.Toast;
 
 //import com.example.petsapp.data.PetContract;
 import com.example.petsapp.data.PetContract.PetEntry;
-import com.example.petsapp.data.PetDbHelper;
-
-import java.util.Locale;
 
 public class EditPetActivity extends AppCompatActivity
         implements LoaderManager.LoaderCallbacks<Cursor> {
@@ -104,7 +99,7 @@ public class EditPetActivity extends AppCompatActivity
     /**
      * Get user unput from editor and save new pet into database
      */
-    private void insertPet() {
+    private void SavePet() {
         // .trim() eliminates any leading or trailing white space from the string that we got
         String nameString = mNameEditText.getText().toString().trim();
         String breedString = mBreedEditText.getText().toString().trim();
@@ -117,12 +112,28 @@ public class EditPetActivity extends AppCompatActivity
         values.put(PetEntry.COLUMN_PET_GENDER, mGender);
         values.put(PetEntry.COLUMN_PET_WEIGHT, weightInt);
 
-        Uri newUri = getContentResolver().insert(PetEntry.CONTENT_URI, values);
+        Intent intent = getIntent();
+        Uri currPetUri = intent.getData();
+        if(currPetUri == null) {
+            Uri newUri = getContentResolver().insert(PetEntry.CONTENT_URI, values);
 
-        if(newUri == null)
-            Toast.makeText(this, R.string.editor_insert_pet_failed, Toast.LENGTH_SHORT).show();
-        else
-            Toast.makeText(this, R.string.editor_insert_pet_successful, Toast.LENGTH_SHORT).show();
+            if(newUri == null)
+                Toast.makeText(this, R.string.editor_insert_pet_failed, Toast.LENGTH_SHORT).show();
+            else
+                Toast.makeText(this, R.string.editor_insert_pet_successful, Toast.LENGTH_SHORT).show();
+
+        } else {
+
+            int rowsUpdated = getContentResolver().update(currPetUri,
+                    values,
+                    null,
+                    null);
+
+            if(rowsUpdated == 0)
+                Toast.makeText(this, R.string.editor_update_pet_failed, Toast.LENGTH_SHORT).show();
+            else
+                Toast.makeText(this, R.string.editor_update_pet_successful, Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override
@@ -135,7 +146,7 @@ public class EditPetActivity extends AppCompatActivity
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_save:
-                insertPet();
+                SavePet();
                 finish(); // Exit Activity
                 return true;
 

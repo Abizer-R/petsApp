@@ -38,6 +38,8 @@ public class EditPetActivity extends AppCompatActivity
     private Spinner mGenderSpinner;
     
     private int mGender = 0;
+
+    private Uri currPetUri;
     
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,7 +54,7 @@ public class EditPetActivity extends AppCompatActivity
         setupSpinner();
 
         Intent intent = getIntent();
-        Uri currPetUri = intent.getData();
+        currPetUri = intent.getData();
 
         if(currPetUri == null) {
             getSupportActionBar().setTitle(R.string.editor_activity_title_new_pet);
@@ -104,7 +106,18 @@ public class EditPetActivity extends AppCompatActivity
         String nameString = mNameEditText.getText().toString().trim();
         String breedString = mBreedEditText.getText().toString().trim();
         String weightString = mWeightEditText.getText().toString().trim();
-        int weightInt = Integer.parseInt(weightString);
+
+        // App will crash if weight is not provided by the user
+        // So, we need to check before parsing, and if its blank, we will use 0 as default
+        int weightInt = 0;
+        if(!TextUtils.isEmpty(weightString))
+            weightInt = Integer.parseInt(weightString);
+
+        if(currPetUri == null &&
+                TextUtils.isEmpty(nameString) && TextUtils.isEmpty(breedString) &&
+                TextUtils.isEmpty(weightString) && mGender == PetEntry.GENDER_UNKNOWN) {
+            return;
+        }
 
         ContentValues values = new ContentValues();
         values.put(PetEntry.COLUMN_PET_NAME, nameString);
@@ -112,8 +125,6 @@ public class EditPetActivity extends AppCompatActivity
         values.put(PetEntry.COLUMN_PET_GENDER, mGender);
         values.put(PetEntry.COLUMN_PET_WEIGHT, weightInt);
 
-        Intent intent = getIntent();
-        Uri currPetUri = intent.getData();
         if(currPetUri == null) {
             Uri newUri = getContentResolver().insert(PetEntry.CONTENT_URI, values);
 

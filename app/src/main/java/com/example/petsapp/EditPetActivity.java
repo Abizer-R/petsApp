@@ -77,8 +77,13 @@ public class EditPetActivity extends AppCompatActivity
         Intent intent = getIntent();
         currPetUri = intent.getData();
 
-        if(currPetUri == null) {
+        if(currPetUri == null) { {
             getSupportActionBar().setTitle(R.string.editor_activity_title_new_pet);
+
+            // Invalidate the options menu, so the "Delete" menu option can be hidden.
+            // (It doesn't make sense to delete a pet that hasn't been created yet.)
+            invalidateOptionsMenu();
+        }
         } else {
             getSupportActionBar().setTitle(R.string.editor_activity_title_edit_pet);
             getLoaderManager().initLoader(PET_LOADER, null, this);
@@ -221,7 +226,7 @@ public class EditPetActivity extends AppCompatActivity
                 return true;
 
             case R.id.action_delete:
-                Toast.makeText(this, "delete option clicked", Toast.LENGTH_SHORT).show();
+                showDeleteConfirmationDialog();
                 return true;
 
             case android.R.id.home:
@@ -241,6 +246,58 @@ public class EditPetActivity extends AppCompatActivity
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        super.onPrepareOptionsMenu(menu);
+
+        // If this is a new pet, hide the "delete" menu item.
+        if (currPetUri == null) {
+            MenuItem menuItem = menu.findItem(R.id.action_delete);
+            menuItem.setVisible(false);
+        }
+        return true;
+    }
+    
+    private void showDeleteConfirmationDialog() {
+        
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage(R.string.delete_dialog_msg);
+        builder.setPositiveButton(R.string.delete, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                
+                deletePet();
+            }
+        });
+        builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                
+                if (dialogInterface != null) {
+                    dialogInterface.dismiss();;
+                }
+            }
+        });
+        
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
+    }
+
+    private void deletePet() {
+
+        // Only perform the deletion if this is an existing pet
+        if(currPetUri != null) {
+            int rowsDeleted = getContentResolver().delete(currPetUri,null,null);
+
+            if(rowsDeleted == 0) {
+                Toast.makeText(this, R.string.editor_delete_pet_failed, Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(this, R.string.editor_delete_pet_successful, Toast.LENGTH_SHORT).show();
+            }
+        }
+        finish();
     }
 
     @Override

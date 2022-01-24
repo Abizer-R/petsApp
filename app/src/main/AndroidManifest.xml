@@ -20,7 +20,6 @@
 
         <activity
             android:name=".EditPetActivity"
-            android:label="@string/editor_activity_title_new_pet"
             android:theme="@style/EditPageTheme"
             android:exported="false"
             android:parentActivityName=".MainActivity"/>

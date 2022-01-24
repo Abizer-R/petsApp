@@ -17,6 +17,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -27,6 +28,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import com.example.petsapp.data.PetContract.PetEntry;
 
+import java.net.URI;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity
@@ -64,6 +66,17 @@ public class MainActivity extends AppCompatActivity
 
         petCursorAdapter = new PetCursorAdapter(this, null);
         petListView.setAdapter(petCursorAdapter);
+
+        petListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
+                Uri currPetUri = ContentUris.withAppendedId(PetEntry.CONTENT_URI, id);
+
+                Intent intent = new Intent(MainActivity.this, EditPetActivity.class);
+                intent.setData(currPetUri);
+                startActivity(intent);
+            }
+        });
 
         getLoaderManager().initLoader(PET_LOADER, null, this);
 

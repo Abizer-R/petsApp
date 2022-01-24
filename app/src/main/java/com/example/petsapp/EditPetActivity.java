@@ -226,7 +226,7 @@ public class EditPetActivity extends AppCompatActivity
                 return true;
 
             case R.id.action_delete:
-                Toast.makeText(this, "delete option clicked", Toast.LENGTH_SHORT).show();
+                showDeleteConfirmationDialog();
                 return true;
 
             case android.R.id.home:
@@ -258,6 +258,46 @@ public class EditPetActivity extends AppCompatActivity
             menuItem.setVisible(false);
         }
         return true;
+    }
+    
+    private void showDeleteConfirmationDialog() {
+        
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage(R.string.delete_dialog_msg);
+        builder.setPositiveButton(R.string.delete, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                
+                deletePet();
+            }
+        });
+        builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                
+                if (dialogInterface != null) {
+                    dialogInterface.dismiss();;
+                }
+            }
+        });
+        
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
+    }
+
+    private void deletePet() {
+
+        // Only perform the deletion if this is an existing pet
+        if(currPetUri != null) {
+            int rowsDeleted = getContentResolver().delete(currPetUri,null,null);
+
+            if(rowsDeleted == 0) {
+                Toast.makeText(this, R.string.editor_delete_pet_failed, Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(this, R.string.editor_delete_pet_successful, Toast.LENGTH_SHORT).show();
+            }
+        }
+        finish();
     }
 
     @Override
